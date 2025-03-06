@@ -1,17 +1,25 @@
-use std::ptr::null;
 
 fn main() {
-    parse_range_quantifier("hello".to_string());
+    parse_range("hello".to_string());
 }
 
-fn parse_range_quantifier(sub_string: String) {
-    let mut to_parse: String = sub_string;
+struct token {
+    tag: String,
+    quantifier: String
+}
 
-    println!("{}", to_parse.chars().next().unwrap());
-    if to_parse.chars().next().unwrap() != '{'
-    {
-        println!("{}", "Not Valid Regex!");
+fn get_last(v: Vec<char>) {
+    v.last().unwrap();
+}
+
+fn parse_range(sub_string: String) {
+    let mut  _v: Vec<token> = Vec::new();
+
+    for i in sub_string.chars() {   
+        match i {
+           '.' => _v.push(token {tag: "wildcard".to_string(), quantifier: "exactlyOne".to_string()}),
+           _ => println!("{}", "default case")
+        }
     }
-    to_parse.pop();
-    
+
 }
