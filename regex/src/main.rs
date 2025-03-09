@@ -65,15 +65,27 @@ fn parse_range(sub_string: &str) {
            '\\' => {
                 let next: char = *iter.peek().unwrap_or(&'∅');
                 if next == '∅' {
-                    println!("No character after backslash")
+                    println!("No character after backslash");
+                    return;
                 }
                 iter.nth(0);
                 _v.last_mut().unwrap().push(Token {tag: "element".to_string(), quantifier: "exactlyOne".to_string(), value: next});
            }
            _ => {
-                println!("defualt")
+            let next: char = *iter.peek().unwrap_or(&'∅');
+            if next == '∅' {
+                println!("Invalid!");
+                return;
+            }
+            _v.last_mut().unwrap().push(Token {tag: "element".to_string(), quantifier: "exactlyOne".to_string(), value: next});
            }
         }
     }
-
+    if _v.len() != 1 {
+        println!("ERROR!!!");
+        return;
+    }
+    // -> &Vec<Token>
+    //return _v.first().unwrap();
+    //need to change return type
 }
