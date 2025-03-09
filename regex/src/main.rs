@@ -7,19 +7,21 @@ fn main() {
 #[derive(Clone)]
 struct Token{
     tag: String,
-    quantifier: String
+    quantifier: String,
+    value: char
 }
 
 
 fn parse_range(sub_string: &str) {
     let mut  _v: Vec<Vec<Token>> = Vec::new();
 
-    let mut default: Token = Token{tag: "NULL".to_string(), quantifier: "NULL".to_string()};
+    let mut default: Token = Token{tag: "NULL".to_string(), quantifier: "NULL".to_string(), value: ' '};
 
-    for i in sub_string.chars() {   
-        match i {
+    let mut iter = sub_string.chars().peekable();
+    while let Some(c) = iter.next() {   
+        match c {
            '.' => {
-                _v.last_mut().unwrap().push(Token {tag: "wildcard".to_string(), quantifier: "exactlyOne".to_string()});
+                _v.last_mut().unwrap().push(Token {tag: "wildcard".to_string(), quantifier: "exactlyOne".to_string(), value: ' '});
            },
            '?' => {
                 let _last: &mut Token = _v.last_mut().unwrap().last_mut().unwrap_or(&mut default);
@@ -46,7 +48,7 @@ fn parse_range(sub_string: &str) {
                     return;
                 }
 
-                _v.last_mut().unwrap().push(Token {tag: _last.tag.clone(), quantifier: "zeroOrMore".to_string()});
+                _v.last_mut().unwrap().push(Token {tag: _last.tag.clone(), quantifier: "zeroOrMore".to_string(), value: ' '});
            },
            '(' => {
                 let new_v: Vec<Token> = vec![];
@@ -58,20 +60,19 @@ fn parse_range(sub_string: &str) {
                     return;
                 }
                 _v.pop();
-                _v.last_mut().unwrap().push(Token {tag: "groupElement".to_string(), quantifier: "exactlyOne".to_string()});
+                _v.last_mut().unwrap().push(Token {tag: "groupElement".to_string(), quantifier: "exactlyOne".to_string(), value: ' '});
            },
            '\\' => {
-                //if 
-                /*
-                    The iterator is moved into the for loop. You cannot manually manipulate an iterator inside a for loop. However, the for loop can be replaced by while let:
-                    while let Some(c) = iter.next() {
-                    let current: char = c;
-                    let next: char = *iter.peek().unwrap_or(&'∅');
-                    }
-                    https://stackoverflow.com/questions/72787359/peek-iterator-inside-for-loop
-                 */
+                let next: char = *iter.peek().unwrap_or(&'∅');
+                if next == '∅' {
+                    println!("No character after backslash")
+                }
+                iter.nth(0);
+                _v.last_mut().unwrap().push(Token {tag: "element".to_string(), quantifier: "exactlyOne".to_string(), value: next});
            }
-           _ => println!("{}", "default case")
+           _ => {
+                println!("defualt")
+           }
         }
     }
 
