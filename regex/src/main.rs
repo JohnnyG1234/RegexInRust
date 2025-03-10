@@ -1,8 +1,12 @@
 
 fn main() {
-    let s: Vec<Token> = parse_range("a?(b.c*c)+d");
+    let s: Vec<Token> = parse_range("a.c241");
 
-    test(s, "a?(b.c*c)+d".to_string());
+    for t in s.iter() {
+        println!("{}", t.value);
+    }
+
+    test(s, "abc".to_string());
 }
 
 
@@ -87,31 +91,48 @@ fn parse_range(sub_string: &str) -> Vec<Token>{
     return _v.first().unwrap().clone();
 }
 
-fn check_match() {
-    
-}
 
 fn test(states: Vec<Token>, to_parse: String) -> bool{
-    let default: Token = Token{tag: "NULL".to_string(), quantifier: "NULL".to_string(), value: ' '};
-    let current_state: &Token = states.first().unwrap_or(&default);
 
-    if current_state.tag == "NULL" {
-        println!("Nothing in states array");
-        return false;
+    if states.len() <= 0{
+        return false
     }
 
-    let mut iter: std::slice::Iter<'_, Token> = states.iter();
 
-    while let Some(t) = iter.next() {
+    for current in states.iter().zip(to_parse.chars().into_iter())
+    {
+        let current_state = current.0;
+        let current_char = current.1;
+        println!("{}", current_state.value.to_string());
+        println!("{}", current_char);
+        
         match current_state.quantifier.as_str() {
-           "exactlyOne" => {
+            "exactlyOne" => {
+                if current_state.tag == "wildcard" {
+                    continue;
+                }
+                
 
-           }
-           _ => {
-
-           }
-        }
+                if current_char != current_state.value {
+                    println!("Chars don't match when matching for exactly one");
+                    return false;
+                }
+            },
+            "zeroOrOne" => {
+                // not sure what to do here becuase soemthing does not have to be here?
+            },
+            "zeroOrMore" => {
+                if current_state.tag == "wildcard" {
+                    continue;
+                }
+            }
+            _ => {
+                println!("Unsuported Element");
+                return false;
+            }
+         }
     }
 
+    println!("Match!!!");
     return true;
 }
