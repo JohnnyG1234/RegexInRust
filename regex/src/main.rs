@@ -2,14 +2,7 @@
 fn main() {
     let s: Vec<Token> = parse_range("a?(b.c*c)+d");
 
-    let mut iter = s.iter();
-    while let Some(t) = iter.next(){
-        println!(" ");
-        println!("{}", t.value.to_string());
-        println!("{}", t.tag.to_string());
-        println!("{}", t.quantifier.to_string());
-        println!(" ");
-    }
+    test(s, "a?(b.c*c)+d".to_string());
 }
 
 
@@ -40,7 +33,7 @@ fn parse_range(sub_string: &str) -> Vec<Token>{
                     return _v.first().unwrap().clone();
                 }
 
-                _last.quantifier = "exactlyOne".to_string();
+                _last.quantifier = "zeroOrOne".to_string();
            },
            '*' => {
                 let _last: &mut Token = _v.last_mut().unwrap().last_mut().unwrap_or(&mut default);
@@ -92,4 +85,33 @@ fn parse_range(sub_string: &str) -> Vec<Token>{
     }
 
     return _v.first().unwrap().clone();
+}
+
+fn check_match() {
+    
+}
+
+fn test(states: Vec<Token>, to_parse: String) -> bool{
+    let default: Token = Token{tag: "NULL".to_string(), quantifier: "NULL".to_string(), value: ' '};
+    let current_state: &Token = states.first().unwrap_or(&default);
+
+    if current_state.tag == "NULL" {
+        println!("Nothing in states array");
+        return false;
+    }
+
+    let mut iter: std::slice::Iter<'_, Token> = states.iter();
+
+    while let Some(t) = iter.next() {
+        match current_state.quantifier.as_str() {
+           "exactlyOne" => {
+
+           }
+           _ => {
+
+           }
+        }
+    }
+
+    return true;
 }
