@@ -1,12 +1,14 @@
 
 fn main() {
-    let s: Vec<Token> = parse_range("a.c241");
+    let s: Vec<Token> = parse_range("/?");
+
+    
 
     for t in s.iter() {
         println!("{}", t.value);
     }
 
-    test(s, "abc".to_string());
+    test(s, "?".to_string());
 }
 
 
@@ -95,12 +97,18 @@ fn parse_range(sub_string: &str) -> Vec<Token>{
 fn test(states: Vec<Token>, to_parse: String) -> bool{
 
     if states.len() <= 0{
+        println!("no states to parse");
         return false
     }
 
+    if states.len() != to_parse.len() {
+        println!("Not right length");
+        return false;
+    }
 
     for current in states.iter().zip(to_parse.chars().into_iter())
     {
+        
         let current_state = current.0;
         let current_char = current.1;
         println!("{}", current_state.value.to_string());
